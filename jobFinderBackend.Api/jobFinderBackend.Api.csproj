@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\jobFinderBackend.Application\jobFinderBackend.Application.csproj" />
+    <ProjectReference Include="..\jobFinderBackend.Infrastructure\jobFinderBackend.Infrastructure.csproj" />
+    <ProjectReference Include="..\jobFinderBackend.Domain\jobFinderBackend.Domain.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="jobFinderBackend.Api/jobFinderBackend.Api.csproj" />
+  <Project Path="jobFinderBackend.Application/jobFinderBackend.Application.csproj" />
+  <Project Path="jobFinderBackend.Domain/jobFinderBackend.Domain.csproj" />
+  <Project Path="jobFinderBackend.Infrastructure/jobFinderBackend.Infrastructure.csproj" />
+</Solution>
