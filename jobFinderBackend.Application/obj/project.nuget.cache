@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "AfyfjOBhCIk=",
+  "dgSpecHash": "u/Q07U7YOSw=",
   "success": true,
   "projectFilePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512"
+  ],
   "logs": []
 }
