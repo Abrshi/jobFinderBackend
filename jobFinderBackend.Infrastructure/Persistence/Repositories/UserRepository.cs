@@ -1,5 +1,6 @@
 using jobFinder.Application.Interfaces;
 using jobFinder.Domain.Entities;
+using jobFinderBackend.Application.Interfaces;
 using jobFinderBackend.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

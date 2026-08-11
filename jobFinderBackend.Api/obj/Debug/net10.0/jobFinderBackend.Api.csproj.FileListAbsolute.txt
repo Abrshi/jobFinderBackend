@@ -127,3 +127,9 @@ C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\n
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\MediatR.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\MediatR.Contracts.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll

@@ -10,6 +10,7 @@ using jobFinder.Application.Validators;
 using jobFinder.Infrastructure.Persistence.Repositories;
 using jobFinder.Infrastructure.Security;
 using jobFinderBackend.Infrastructure.Persistence.Configuration.Data;
+using jobFinderBackend.Application.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
