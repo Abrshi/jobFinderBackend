@@ -125,3 +125,5 @@ C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\n
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Npgsql.dll
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
