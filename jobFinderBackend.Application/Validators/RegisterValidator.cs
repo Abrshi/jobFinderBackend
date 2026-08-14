@@ -1,7 +1,7 @@
 using FluentValidation;
-using jobFinder.Application.DTOs.Auth;
+using jobFinderBackend.Application.DTOs.Auth;
 
-namespace jobFinder.Application.Validators;
+namespace jobFinderBackend.Application.Validators;
 
 public class RegisterValidator : AbstractValidator<RegisterRequest>
 {

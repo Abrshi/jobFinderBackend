@@ -1,6 +1,6 @@
-using jobFinder.Application.DTOs.Auth;
+using jobFinderBackend.Application.DTOs.Auth;
 
-namespace jobFinder.Application.Interfaces;
+namespace jobFinderBackend.Application.Interfaces;
 
 public interface IAuthService
 {
