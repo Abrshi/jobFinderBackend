@@ -1,6 +1,6 @@
-using jobFinder.Application.Interfaces;
+using jobFinderBackend.Application.Interfaces;
 
-namespace jobFinder.Infrastructure.Security;
+namespace jobFinderBackend.Infrastructure.Security;
 
 public class PasswordHasher : IPasswordHasher
 {

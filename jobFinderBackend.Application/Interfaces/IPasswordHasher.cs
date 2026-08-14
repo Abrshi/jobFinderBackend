@@ -1,4 +1,4 @@
-namespace jobFinder.Application.Interfaces;
+namespace jobFinderBackend.Application.Interfaces;
 
 public interface IPasswordHasher
 {

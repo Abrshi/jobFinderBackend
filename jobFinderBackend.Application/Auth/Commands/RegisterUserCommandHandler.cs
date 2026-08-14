@@ -3,15 +3,24 @@ using jobFinderBackend.Application.Interfaces;
 using UserEntity = jobFinder.Domain.Entities.Users;
 
 namespace jobFinderBackend.Application.Users.Commands;
-
+public record RegisterUserCommand(
+    string FirstName,
+    string LastName,
+    string Email,
+    string Password
+) : IRequest<UserEntity>;
 public class RegisterUserCommandHandler
     : IRequestHandler<RegisterUserCommand, UserEntity>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public RegisterUserCommandHandler(IUserRepository userRepository)
+    public RegisterUserCommandHandler(
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher)
     {
         _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<UserEntity> Handle(
@@ -27,10 +36,19 @@ public class RegisterUserCommandHandler
                 "A user with this email already exists.");
         }
 
+        var passwordHash = _passwordHasher.Hash(
+            request.Password
+        );
+
         var user = new UserEntity
         {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             Email = request.Email,
-            PasswordHash = request.Password
+            PasswordHash = passwordHash,
+
+            // Default subscription plan
+            SubscriptionPlanId = 1
         };
 
         await _userRepository.AddAsync(user);
