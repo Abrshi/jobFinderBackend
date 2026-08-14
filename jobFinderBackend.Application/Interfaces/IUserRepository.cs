@@ -1,12 +1,12 @@
-using jobFinder.Domain.Entities;
+using UserEntity = jobFinder.Domain.Entities.Users;
 
-namespace jobFinder.Application.Interfaces;
+namespace jobFinderBackend.Application.Interfaces;
 
 public interface IUserRepository
 {
-    Task<Users?> GetByEmailAsync(string email);
-
-    Task AddAsync(Users user);
+    Task<UserEntity?> GetByEmailAsync(string email);
 
     Task<bool> ExistsByEmailAsync(string email);
+
+    Task AddAsync(UserEntity user);
 }

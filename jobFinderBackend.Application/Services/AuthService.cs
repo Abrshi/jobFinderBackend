@@ -2,6 +2,7 @@ using FluentValidation;
 using jobFinder.Application.DTOs.Auth;
 using jobFinder.Application.Interfaces;
 using jobFinder.Domain.Entities;
+using jobFinderBackend.Application.Interfaces;
 
 namespace jobFinder.Application.Services;
 
