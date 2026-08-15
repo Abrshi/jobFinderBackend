@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using jobFinderBackend.Application.Profile.Commands.UpdateProfileJobPlatforms;
 using jobFinderBackend.Application.Profile.Commands.UpdateProfileSkills;
+using jobFinderBackend.Application.Profile.Commands.UpdateUserPlatforms;
 using jobFinderBackend.Application.Profile.DTOs;
 using jobFinderBackend.Application.Profile.Queries.GetJobPlatform;
 using jobFinderBackend.Application.Profile.Queries.GetSkills;
@@ -60,10 +61,10 @@ public class ProfileController : ControllerBase
         return Ok(result);
     }
 
-    //put job platforms
+    //put job platforms with subscription validation
     [Authorize]
     [HttpPut("platforms")]
-    public async Task<IActionResult> UpdateJobPlatform(UpdateUserJobPlatformsRequest request)
+    public async Task<IActionResult> UpdatePlatforms(UpdateUserPlatformsRequest request)
     {
         var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
 
@@ -72,11 +73,14 @@ public class ProfileController : ControllerBase
             return Unauthorized(new { message = "User is not authenticated." });
         }
 
-        await _mediator.Send(new UpdateProfileJobPlatformsCommand(
-            userId,
-            request.JobPlatforms
-        ));
-
-        return Ok(new { message = "Job platforms updated successfully." });
+        try
+        {
+            await _mediator.Send(new UpdateUserPlatformsCommand(userId, request.PlatformIds));
+            return Ok(new { message = "Platforms updated successfully.", platformIds = request.PlatformIds });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

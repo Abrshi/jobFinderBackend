@@ -44,6 +44,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IUserJobPlatformRepository, UserJobPlatformRepository>();
+builder.Services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
 
 // Security
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();

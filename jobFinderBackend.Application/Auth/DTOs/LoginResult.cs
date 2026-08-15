@@ -9,4 +9,6 @@ public class LoginResult
     public string Role { get; set; } = null!;
 
     public string Token { get; set; } = null!;
+
+    public SubscriptionPlanDto? Subscription { get; set; }
 }

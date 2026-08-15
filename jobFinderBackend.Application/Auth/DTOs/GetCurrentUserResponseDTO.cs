@@ -1,3 +1,5 @@
+using jobFinderBackend.Application.DTOs.Auth;
+
 namespace jobFinderBackend.Application.Users.Queries.GetCurrentUser;
 
 public class GetCurrentUserResponse
@@ -13,4 +15,6 @@ public class GetCurrentUserResponse
     public string Role { get; set; } = string.Empty;
 
     public int SubscriptionPlanId { get; set; }
+
+    public SubscriptionPlanDto? Subscription { get; set; }
 }

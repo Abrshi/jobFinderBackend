@@ -68,8 +68,11 @@ public class LoginUserCommandHandler
             );
         }
 
+        // 4. Get user's active subscription
+        var subscriptionPlan = await _userRepository.GetActiveSubscriptionPlanAsync(user.Id);
 
-        // 4. Generate JWT
+
+        // 5. Generate JWT
         var token = _jwtTokenGenerator.GenerateToken(
             user.Id,
             user.Email,
@@ -77,13 +80,28 @@ public class LoginUserCommandHandler
         );
 
 
-        // 5. Return login result
+        // 6. Return login result
         return new LoginResult
         {
             Id = user.Id,
             Email = user.Email,
             Role = role.Name,
-            Token = token
+            Token = token,
+            Subscription = subscriptionPlan != null ? MapToDto(subscriptionPlan) : null
+        };
+    }
+
+    private static SubscriptionPlanDto MapToDto(jobFinder.Domain.Entities.SubscriptionPlans plan)
+    {
+        return new SubscriptionPlanDto
+        {
+            Id = plan.Id,
+            Name = plan.Name,
+            Price = plan.Price,
+            MaxJobSources = plan.MaxJobSources,
+            CanGenerateCV = plan.CanGenerateCV,
+            CanGenerateCoverLetter = plan.CanGenerateCoverLetter,
+            CanUseInterviewAI = plan.CanUseInterviewAI
         };
     }
 }

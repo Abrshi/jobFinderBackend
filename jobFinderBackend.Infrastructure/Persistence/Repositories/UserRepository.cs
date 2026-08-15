@@ -82,4 +82,16 @@ public class UserRepository : IUserRepository
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<SubscriptionPlans?> GetActiveSubscriptionPlanAsync(int userId)
+    {
+        var activeSubscription = await _context.UserSubscriptions
+            .Where(us => us.UserId == userId && us.IsActive)
+            .Where(us => us.EndDate == null || us.EndDate > DateTime.UtcNow)
+            .OrderByDescending(us => us.StartDate)
+            .Select(us => us.SubscriptionPlan)
+            .FirstOrDefaultAsync();
+
+        return activeSubscription;
+    }
 }

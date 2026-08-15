@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+024ed212a09dae19fc231b2d4cb42c968b329037")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+077bb9b9455faa08c8fbe6ab7e2f9245d6e1210d")]
 [assembly: System.Reflection.AssemblyProductAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
