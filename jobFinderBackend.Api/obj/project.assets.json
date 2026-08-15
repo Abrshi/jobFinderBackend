@@ -2993,11 +2993,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
       "projectName": "jobFinderBackend.Api",
-      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\obj\\",
+      "outputPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -3013,14 +3013,14 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj": {
-              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj"
+            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj": {
+              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj"
             },
-            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj": {
-              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj"
+            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj": {
+              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj"
             },
-            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj"
+            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj"
             }
           }
         }

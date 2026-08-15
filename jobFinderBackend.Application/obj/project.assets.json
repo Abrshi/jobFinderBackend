@@ -461,11 +461,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj",
       "projectName": "jobFinderBackend.Application",
-      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Application\\jobFinderBackend.Application.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Application\\obj\\",
+      "outputPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Application\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -481,8 +481,8 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj": {
-              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj"
+            "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj": {
+              "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Domain\\jobFinderBackend.Domain.csproj"
             }
           }
         }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sY0YScQQrO0=",
+  "dgSpecHash": "RqFGoUB1GWE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Infrastructure\\jobFinderBackend.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",

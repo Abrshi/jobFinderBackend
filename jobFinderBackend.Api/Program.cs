@@ -24,7 +24,7 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddScoped<IJobPlatformRepository, JobPlatformRepository>();
 // Database
 builder.Services.AddDbContext<JobFinderBackendDbContext>(options =>
     options.UseNpgsql(
@@ -41,6 +41,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
+builder.Services.AddScoped<IUserJobPlatformRepository, UserJobPlatformRepository>();
 
 // Security
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();

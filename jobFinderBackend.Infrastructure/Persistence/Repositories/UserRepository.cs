@@ -68,6 +68,18 @@ public class UserRepository : IUserRepository
 
         await _context.UserRoles.AddAsync(userRole);
 
+        // Create initial user subscription with Free plan (Id = 1)
+        var userSubscription = new UserSubscription
+        {
+            UserId = user.Id,
+            SubscriptionPlanId = 1,
+            StartDate = DateTime.UtcNow,
+            EndDate = null,
+            IsActive = true
+        };
+
+        await _context.UserSubscriptions.AddAsync(userSubscription);
+
         await _context.SaveChangesAsync();
     }
 }

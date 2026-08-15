@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NzBCHDnWcLg=",
+  "dgSpecHash": "i1eyjyJDrTA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
+  "projectFilePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\asp.versioning.abstractions\\10.2.1\\asp.versioning.abstractions.10.2.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\asp.versioning.http\\10.2.1\\asp.versioning.http.10.2.1.nupkg.sha512",
@@ -57,9 +57,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "Package 'Microsoft.OpenApi' 2.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\BACKEND\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
+      "filePath": "C:\\Users\\user\\Desktop\\qiyas\\lab\\project\\jobFinderBackend\\jobFinderBackend.Api\\jobFinderBackend.Api.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
         "net10.0"
