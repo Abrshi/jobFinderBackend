@@ -5,4 +5,6 @@ namespace jobFinderBackend.Application.Interfaces;
 public interface IUserSkillRepository
 {
     Task ReplaceForUserAsync(int userId, IEnumerable<UserSkillSelectionDto> skills);
+
+    Task<List<int>> GetUserSkillIdsAsync(int userId);
 }

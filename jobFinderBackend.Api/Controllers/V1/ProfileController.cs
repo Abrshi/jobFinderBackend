@@ -1,9 +1,10 @@
+using System.Security.Claims;
 using Asp.Versioning;
-using jobFinderBackend.Application.Profile.Commands.UpdateProfileJobPlatforms;
 using jobFinderBackend.Application.Profile.Commands.UpdateProfileSkills;
 using jobFinderBackend.Application.Profile.Commands.UpdateUserPlatforms;
 using jobFinderBackend.Application.Profile.DTOs;
 using jobFinderBackend.Application.Profile.Queries.GetJobPlatform;
+using jobFinderBackend.Application.Profile.Queries.GetMySkills;
 using jobFinderBackend.Application.Profile.Queries.GetSkills;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -33,25 +34,45 @@ public class ProfileController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("skills")]
-    public async Task<IActionResult> UpdateSkills(UpdateUserSkillsRequest request)
+    [HttpGet("skills/my")]
+    public async Task<ActionResult<List<int>>> GetMySkills()
     {
-        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        var result = await _mediator.Send(new GetMySkillsQuery());
 
-        if (userIdClaim is null || !int.TryParse(userIdClaim.Value, out var userId))
-        {
-            return Unauthorized(new { message = "User is not authenticated." });
-        }
-
-        await _mediator.Send(new UpdateProfileSkillsCommand(
-            userId,
-            request.Skills
-        ));
-
-        return Ok(new { message = "Skills updated successfully." });
+        return Ok(result);
     }
 
-    //get job platforms 
+    [Authorize]
+    [HttpPut("skills")]
+    public async Task<IActionResult> UpdateSkills(
+        UpdateUserSkillsRequest request)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (
+            userIdClaim is null ||
+            !int.TryParse(userIdClaim.Value, out var userId)
+        )
+        {
+            return Unauthorized(new
+            {
+                message = "User is not authenticated."
+            });
+        }
+
+        await _mediator.Send(
+            new UpdateProfileSkillsCommand(
+                userId,
+                request.Skills
+            )
+        );
+
+        return Ok(new
+        {
+            message = "Skills updated successfully."
+        });
+    }
+
     [Authorize]
     [HttpGet("platforms")]
     public async Task<ActionResult<List<GetJobPlatformResponse>>> GetJobPlatform()
@@ -61,26 +82,69 @@ public class ProfileController : ControllerBase
         return Ok(result);
     }
 
-    //put job platforms with subscription validation
+    [Authorize]
+    [HttpGet("platforms/my")]
+    public async Task<ActionResult<List<int>>> GetMyJobPlatform()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (
+            userIdClaim is null ||
+            !int.TryParse(userIdClaim.Value, out var userId)
+        )
+        {
+            return Unauthorized(new
+            {
+                message = "User is not authenticated."
+            });
+        }
+
+        var result = await _mediator.Send(
+            new GetMyJobPlatformQuery(userId)
+        );
+
+        return Ok(result);
+    }
+
     [Authorize]
     [HttpPut("platforms")]
-    public async Task<IActionResult> UpdatePlatforms(UpdateUserPlatformsRequest request)
+    public async Task<IActionResult> UpdatePlatforms(
+        UpdateUserPlatformsRequest request)
     {
-        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        if (userIdClaim is null || !int.TryParse(userIdClaim.Value, out var userId))
+        if (
+            userIdClaim is null ||
+            !int.TryParse(userIdClaim.Value, out var userId)
+        )
         {
-            return Unauthorized(new { message = "User is not authenticated." });
+            return Unauthorized(new
+            {
+                message = "User is not authenticated."
+            });
         }
 
         try
         {
-            await _mediator.Send(new UpdateUserPlatformsCommand(userId, request.PlatformIds));
-            return Ok(new { message = "Platforms updated successfully.", platformIds = request.PlatformIds });
+            await _mediator.Send(
+                new UpdateUserPlatformsCommand(
+                    userId,
+                    request.PlatformIds
+                )
+            );
+
+            return Ok(new
+            {
+                message = "Platforms updated successfully.",
+                platformIds = request.PlatformIds
+            });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
         }
     }
 }

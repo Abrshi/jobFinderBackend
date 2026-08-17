@@ -10,4 +10,5 @@ public class GetJobPlatformResponse
     public string? Logo { get; set; }
     public string? SourceType { get; set; }
     public bool? IsActive { get; set; }
+    public bool? IsMy { get; set; }
 }

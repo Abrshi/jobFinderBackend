@@ -43,4 +43,13 @@ public class UserSkillRepository : IUserSkillRepository
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<int>> GetUserSkillIdsAsync(int userId)
+    {
+        return await _context.UserSkills
+            .Where(us => us.UserId == userId)
+            .Select(us => us.SkillId)
+            .Distinct()
+            .ToListAsync();
+    }
 }

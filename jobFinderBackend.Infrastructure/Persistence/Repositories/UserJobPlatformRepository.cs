@@ -10,12 +10,24 @@ public class UserJobPlatformRepository : IUserJobPlatformRepository
 {
     private readonly JobFinderBackendDbContext _context;
 
-    public UserJobPlatformRepository(JobFinderBackendDbContext context)
+    public UserJobPlatformRepository(
+        JobFinderBackendDbContext context)
     {
         _context = context;
     }
 
-    public async Task ReplaceForUserAsync(int userId, IEnumerable<UserJobPlatformSelectionDto> jobPlatforms)
+    public async Task<List<UserJobSource>> GetForUserAsync(
+        int userId)
+    {
+        return await _context.UserJobSources
+            .AsNoTracking()
+            .Where(ujs => ujs.UserId == userId)
+            .ToListAsync();
+    }
+
+    public async Task ReplaceForUserAsync(
+        int userId,
+        IEnumerable<UserJobPlatformSelectionDto> jobPlatforms)
     {
         var existingPlatforms = await _context.UserJobSources
             .Where(ujs => ujs.UserId == userId)
@@ -31,7 +43,7 @@ public class UserJobPlatformRepository : IUserJobPlatformRepository
             {
                 UserId = userId,
                 JobPlatformId = jp.JobPlatformId,
-                IsActive = jp.IsSynced,
+                IsActive = true,
                 SelectedAt = DateTime.UtcNow,
                 LastSyncDate = null
             })
