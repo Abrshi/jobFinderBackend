@@ -21,10 +21,32 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 using System.Text;
+using jobFinder.Infrastructure.JobSources.Afriwork;
+using jobFinderBackend.Infrastructure.AI.Gemini;
+using jobFinder.Application.Jobs.Sources;
+using jobFinder.Application.Jobs.Classification;
+using jobFinderBackend.Infrastructure.Jobd;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddHttpClient<AfriworkClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        "https://api.afriworket.com/v1/graphql");
+
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+// Gemini
+builder.Services.AddHttpClient<GeminiClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        "https://generativelanguage.googleapis.com/");
+    client.Timeout = TimeSpan.FromSeconds(60);
+});
 builder.Services.AddScoped<IJobPlatformRepository, JobPlatformRepository>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
 // Database
 builder.Services.AddDbContext<JobFinderBackendDbContext>(options =>
     options.UseNpgsql(
@@ -66,6 +88,9 @@ builder.Services.AddMediatR(cfg =>
         typeof(RegisterUserCommand).Assembly
     );
 });
+
+// Afriwork
+
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -124,7 +149,12 @@ builder.Services.AddAuthorization();
 
 // Controllers
 builder.Services.AddControllers();
+builder.Services.AddScoped<IJobSource, AfriworkJobSource>();
 
+builder.Services.AddScoped<IJobClassifier, GeminiJobClassifier>();
+builder.Services.AddScoped<JobEntityResolver>();
+
+builder.Services.AddHostedService<JobIngestionWorker>();
 // CORS
 builder.Services.AddCors(options =>
 {

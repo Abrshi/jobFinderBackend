@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("f08936a3-bf2c-4363-b1e4-5460b3916746")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73bf6fb6085bbc03d1764dc99d004ea975762715")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e364db75d111eb473227c182736a3aa9ca6ef22c")]
 [assembly: System.Reflection.AssemblyProductAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("jobFinderBackend.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

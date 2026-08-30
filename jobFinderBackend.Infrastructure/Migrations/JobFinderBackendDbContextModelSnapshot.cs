@@ -409,6 +409,10 @@ namespace jobFinderBackend.Infrastructure.Migrations
                     b.Property<DateTime?>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("JobPlatformId")
                         .HasColumnType("integer");
 
@@ -543,7 +547,8 @@ namespace jobFinderBackend.Infrastructure.Migrations
 
                     b.Property<string>("Importance")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("JobId")
                         .HasColumnType("integer");
@@ -553,9 +558,10 @@ namespace jobFinderBackend.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("JobId");
-
                     b.HasIndex("SkillId");
+
+                    b.HasIndex("JobId", "SkillId")
+                        .IsUnique();
 
                     b.ToTable("JobSkills");
                 });
@@ -737,13 +743,18 @@ namespace jobFinderBackend.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Skills");
                 });
@@ -951,7 +962,8 @@ namespace jobFinderBackend.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Level")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("SkillId")
                         .HasColumnType("integer");
@@ -966,7 +978,8 @@ namespace jobFinderBackend.Infrastructure.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "SkillId")
+                        .IsUnique();
 
                     b.ToTable("UserSkills");
                 });
@@ -1254,7 +1267,7 @@ namespace jobFinderBackend.Infrastructure.Migrations
                     b.HasOne("jobFinder.Domain.Entities.Skill", "Skill")
                         .WithMany("JobSkills")
                         .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Job");
@@ -1395,7 +1408,7 @@ namespace jobFinderBackend.Infrastructure.Migrations
                     b.HasOne("jobFinder.Domain.Entities.Skill", "Skill")
                         .WithMany("UserSkills")
                         .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("jobFinder.Domain.Entities.Users", "User")

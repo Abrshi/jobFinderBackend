@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\jobFinderBackend.Application\jobFinderBackend.Application.csproj" />
@@ -24,6 +24,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f08936a3-bf2c-4363-b1e4-5460b3916746</UserSecretsId>
   </PropertyGroup>
 
 </Project>

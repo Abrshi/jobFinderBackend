@@ -166,8 +166,28 @@ public static class DataSeeder
             };
 
             await context.Skills.AddRangeAsync(skills);
-
             await context.SaveChangesAsync();
+        }
+        else
+        {
+            // Remove junk/invalid skills if present
+            var junkSkills = await context.Skills
+                .Where(s => s.Name == "Select" || s.Name == "—" || s.Name.Length > 50 || s.Name.Contains("<") || s.Name.Contains(">"))
+                .ToListAsync();
+
+            if (junkSkills.Count > 0)
+            {
+                // Remove links first
+                var junkSkillIds = junkSkills.Select(s => s.Id).ToList();
+                var userSkillLinks = await context.UserSkills.Where(us => junkSkillIds.Contains(us.SkillId)).ToListAsync();
+                if (userSkillLinks.Count > 0) context.UserSkills.RemoveRange(userSkillLinks);
+
+                var jobSkillLinks = await context.JobSkills.Where(js => junkSkillIds.Contains(js.SkillId)).ToListAsync();
+                if (jobSkillLinks.Count > 0) context.JobSkills.RemoveRange(jobSkillLinks);
+
+                context.Skills.RemoveRange(junkSkills);
+                await context.SaveChangesAsync();
+            }
         }
     
 
