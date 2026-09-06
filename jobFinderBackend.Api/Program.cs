@@ -67,6 +67,9 @@ builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IUserSkillRepository, UserSkillRepository>();
 builder.Services.AddScoped<IUserJobPlatformRepository, UserJobPlatformRepository>();
 builder.Services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IGeneratedDocumentRepository, GeneratedDocumentRepository>();
+builder.Services.AddScoped<IGenerativeDocumentService, GeminiApplicationDocumentGenerator>();
 
 // Security
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -153,6 +156,7 @@ builder.Services.AddScoped<IJobSource, AfriworkJobSource>();
 
 builder.Services.AddScoped<IJobClassifier, GeminiJobClassifier>();
 builder.Services.AddScoped<JobEntityResolver>();
+builder.Services.AddScoped<IJobSyncService, JobSyncService>();
 
 builder.Services.AddHostedService<JobIngestionWorker>();
 // CORS

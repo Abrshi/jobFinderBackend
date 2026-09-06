@@ -40,7 +40,7 @@ public sealed class AfriworkClient
                             ApprovalStatus = new AfriworkApprovalStatusFilter
                             {
                                 // In = ["a", "s"]
-                                In = ["PUBLISHED", "REFRESHED"]
+                                In = ["PUBLISHEDD", "REFRESHEDD"]
                             }
                         }
                     ]

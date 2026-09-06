@@ -5,6 +5,8 @@ using jobFinderBackend.Application.Jobs.Queries.GetJobs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
+using jobFinderBackend.Infrastructure.Jobd;
+
 namespace jobFinderBackend.Api.Controllers;
 
 [ApiController]
@@ -13,10 +15,14 @@ namespace jobFinderBackend.Api.Controllers;
 public class JobsController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IJobSyncService _jobSyncService;
 
-    public JobsController(IMediator mediator)
+    public JobsController(
+        IMediator mediator,
+        IJobSyncService jobSyncService)
     {
         _mediator = mediator;
+        _jobSyncService = jobSyncService;
     }
 
     [HttpGet]
@@ -38,6 +44,14 @@ public class JobsController : ControllerBase
             return NotFound();
         }
 
+        return Ok(result);
+    }
+
+    [HttpPost("sync-afriwork")]
+    public async Task<ActionResult<JobSyncResultDto>> SyncAfriwork(
+        CancellationToken cancellationToken)
+    {
+        var result = await _jobSyncService.SynchronizeJobsAsync(cancellationToken);
         return Ok(result);
     }
 }

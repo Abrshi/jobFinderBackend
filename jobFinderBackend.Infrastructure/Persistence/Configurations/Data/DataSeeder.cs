@@ -1,5 +1,6 @@
 using jobFinder.Domain.Entities;
 using jobFinderBackend.Infrastructure.Data;
+using jobFinderBackend.Infrastructure.Jobd;
 using Microsoft.EntityFrameworkCore;
 
 namespace jobFinderBackend.Infrastructure.Persistence.Configuration.Data;
@@ -81,113 +82,43 @@ public static class DataSeeder
 
 
         // ==============================
-        // Seed Skills
+        // Seed & Re-categorize Skills
         // ==============================
 
-        if (!await context.Skills.AnyAsync())
+        var junkSkills = await context.Skills
+            .Where(s => s.Name == "Select" || s.Name == "—" || s.Name.Length < 2 || s.Name.Length > 50 || s.Name.Contains("<") || s.Name.Contains(">") || s.Name.Contains("http://") || s.Name.Contains("https://"))
+            .ToListAsync();
+
+        if (junkSkills.Count > 0)
         {
-            var skills = new List<Skill>
-            {
-                // Programming Languages
-                new Skill { Name = "C#", Category = "Programming Languages" },
-                new Skill { Name = "Java", Category = "Programming Languages" },
-                new Skill { Name = "JavaScript", Category = "Programming Languages" },
-                new Skill { Name = "TypeScript", Category = "Programming Languages" },
-                new Skill { Name = "Python", Category = "Programming Languages" },
-                new Skill { Name = "PHP", Category = "Programming Languages" },
-                new Skill { Name = "C++", Category = "Programming Languages" },
-                new Skill { Name = "Go", Category = "Programming Languages" },
-                new Skill { Name = "Rust", Category = "Programming Languages" },
+            var junkSkillIds = junkSkills.Select(s => s.Id).ToList();
+            var userSkillLinks = await context.UserSkills.Where(us => junkSkillIds.Contains(us.SkillId)).ToListAsync();
+            if (userSkillLinks.Count > 0) context.UserSkills.RemoveRange(userSkillLinks);
 
-                // Frontend
-                new Skill { Name = "HTML", Category = "Frontend" },
-                new Skill { Name = "CSS", Category = "Frontend" },
-                new Skill { Name = "React", Category = "Frontend" },
-                new Skill { Name = "Angular", Category = "Frontend" },
-                new Skill { Name = "Vue.js", Category = "Frontend" },
-                new Skill { Name = "Next.js", Category = "Frontend" },
-                new Skill { Name = "Tailwind CSS", Category = "Frontend" },
+            var jobSkillLinks = await context.JobSkills.Where(js => junkSkillIds.Contains(js.SkillId)).ToListAsync();
+            if (jobSkillLinks.Count > 0) context.JobSkills.RemoveRange(jobSkillLinks);
 
-                // Backend
-                new Skill { Name = "ASP.NET Core", Category = "Backend" },
-                new Skill { Name = "Node.js", Category = "Backend" },
-                new Skill { Name = "Express.js", Category = "Backend" },
-                new Skill { Name = "Spring Boot", Category = "Backend" },
-                new Skill { Name = "Laravel", Category = "Backend" },
-                new Skill { Name = "Django", Category = "Backend" },
-                new Skill { Name = "REST API", Category = "Backend" },
-                new Skill { Name = "Entity Framework Core", Category = "Backend" },
-
-                // Database
-                new Skill { Name = "PostgreSQL", Category = "Database" },
-                new Skill { Name = "MySQL", Category = "Database" },
-                new Skill { Name = "SQL Server", Category = "Database" },
-                new Skill { Name = "MongoDB", Category = "Database" },
-                new Skill { Name = "Redis", Category = "Database" },
-
-                // DevOps & Cloud
-                new Skill { Name = "Git", Category = "DevOps & Cloud" },
-                new Skill { Name = "GitHub", Category = "DevOps & Cloud" },
-                new Skill { Name = "Docker", Category = "DevOps & Cloud" },
-                new Skill { Name = "Kubernetes", Category = "DevOps & Cloud" },
-                new Skill { Name = "AWS", Category = "DevOps & Cloud" },
-                new Skill { Name = "Azure", Category = "DevOps & Cloud" },
-                new Skill { Name = "Google Cloud", Category = "DevOps & Cloud" },
-                new Skill { Name = "CI/CD", Category = "DevOps & Cloud" },
-
-                // Mobile
-                new Skill { Name = "Flutter", Category = "Mobile" },
-                new Skill { Name = "React Native", Category = "Mobile" },
-                new Skill { Name = "Android", Category = "Mobile" },
-                new Skill { Name = "iOS", Category = "Mobile" },
-
-                // Testing
-                new Skill { Name = "Selenium", Category = "Testing" },
-                new Skill { Name = "Jest", Category = "Testing" },
-                new Skill { Name = "xUnit", Category = "Testing" },
-                new Skill { Name = "Cypress", Category = "Testing" },
-
-                // AI & Data
-                new Skill { Name = "Machine Learning", Category = "AI & Data" },
-                new Skill { Name = "Data Analysis", Category = "AI & Data" },
-                new Skill { Name = "TensorFlow", Category = "AI & Data" },
-                new Skill { Name = "PyTorch", Category = "AI & Data" },
-                new Skill { Name = "Pandas", Category = "AI & Data" },
-
-                // UI/UX
-                new Skill { Name = "Figma", Category = "UI/UX" },
-                new Skill { Name = "UI Design", Category = "UI/UX" },
-                new Skill { Name = "UX Design", Category = "UI/UX" },
-
-                // Security
-                new Skill { Name = "Cybersecurity", Category = "Security" },
-                new Skill { Name = "OAuth 2.0", Category = "Security" },
-                new Skill { Name = "JWT", Category = "Security" }
-            };
-
-            await context.Skills.AddRangeAsync(skills);
+            context.Skills.RemoveRange(junkSkills);
             await context.SaveChangesAsync();
         }
-        else
+
+        // Re-categorize any existing skills to ensure no skills remain under "General" or "Other"
+        var allSkills = await context.Skills.ToListAsync();
+        bool updatedAny = false;
+
+        foreach (var skill in allSkills)
         {
-            // Remove junk/invalid skills if present
-            var junkSkills = await context.Skills
-                .Where(s => s.Name == "Select" || s.Name == "—" || s.Name.Length > 50 || s.Name.Contains("<") || s.Name.Contains(">"))
-                .ToListAsync();
-
-            if (junkSkills.Count > 0)
+            var resolvedCategory = SkillCategoryResolver.ResolveCategory(skill.Name);
+            if (skill.Category != resolvedCategory)
             {
-                // Remove links first
-                var junkSkillIds = junkSkills.Select(s => s.Id).ToList();
-                var userSkillLinks = await context.UserSkills.Where(us => junkSkillIds.Contains(us.SkillId)).ToListAsync();
-                if (userSkillLinks.Count > 0) context.UserSkills.RemoveRange(userSkillLinks);
-
-                var jobSkillLinks = await context.JobSkills.Where(js => junkSkillIds.Contains(js.SkillId)).ToListAsync();
-                if (jobSkillLinks.Count > 0) context.JobSkills.RemoveRange(jobSkillLinks);
-
-                context.Skills.RemoveRange(junkSkills);
-                await context.SaveChangesAsync();
+                skill.Category = resolvedCategory;
+                updatedAny = true;
             }
+        }
+
+        if (updatedAny)
+        {
+            await context.SaveChangesAsync();
         }
     
 

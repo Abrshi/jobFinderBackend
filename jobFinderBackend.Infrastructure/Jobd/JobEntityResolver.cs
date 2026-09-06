@@ -97,6 +97,14 @@ public sealed class JobEntityResolver
             return existing;
         }
 
+        var localTracked = _db.JobCategories.Local
+            .FirstOrDefault(c => c.Name.Equals(normalized, StringComparison.OrdinalIgnoreCase));
+
+        if (localTracked != null)
+        {
+            return localTracked;
+        }
+
         var category = new JobCategory
         {
             Name = normalized,
@@ -148,6 +156,26 @@ public sealed class JobEntityResolver
             }
 
             return existing;
+        }
+
+        var localTracked = _db.Companies.Local
+            .FirstOrDefault(c => c.Name.Equals(normalized, StringComparison.OrdinalIgnoreCase));
+
+        if (localTracked != null)
+        {
+            if (string.IsNullOrWhiteSpace(localTracked.Industry)
+                && !string.IsNullOrWhiteSpace(industry))
+            {
+                localTracked.Industry = industry.Trim();
+            }
+
+            if (string.IsNullOrWhiteSpace(localTracked.Country)
+                && !string.IsNullOrWhiteSpace(country))
+            {
+                localTracked.Country = country.Trim();
+            }
+
+            return localTracked;
         }
 
         var company = new Company
@@ -286,58 +314,6 @@ public sealed class JobEntityResolver
 
     private static string InferSkillCategory(string skillName)
     {
-        var lower = skillName.ToLower();
-
-        if (lower.Contains("c#") || lower.Contains("java") || lower.Contains("python") || lower.Contains("typescript") || lower.Contains("javascript") || lower.Contains("c++") || lower.Contains("golang") || lower.Contains("rust") || lower.Contains("php"))
-        {
-            return "Programming Languages";
-        }
-
-        if (lower.Contains("react") || lower.Contains("angular") || lower.Contains("vue") || lower.Contains("html") || lower.Contains("css") || lower.Contains("tailwind") || lower.Contains("next"))
-        {
-            return "Frontend";
-        }
-
-        if (lower.Contains("node") || lower.Contains(".net") || lower.Contains("asp.net") || lower.Contains("express") || lower.Contains("spring") || lower.Contains("laravel") || lower.Contains("django") || lower.Contains("api"))
-        {
-            return "Backend";
-        }
-
-        if (lower.Contains("sql") || lower.Contains("postgres") || lower.Contains("mongo") || lower.Contains("redis") || lower.Contains("database"))
-        {
-            return "Database";
-        }
-
-        if (lower.Contains("docker") || lower.Contains("kubernetes") || lower.Contains("aws") || lower.Contains("azure") || lower.Contains("cloud") || lower.Contains("git") || lower.Contains("ci/cd") || lower.Contains("devops"))
-        {
-            return "DevOps & Cloud";
-        }
-
-        if (lower.Contains("flutter") || lower.Contains("react native") || lower.Contains("android") || lower.Contains("ios") || lower.Contains("mobile"))
-        {
-            return "Mobile";
-        }
-
-        if (lower.Contains("test") || lower.Contains("jest") || lower.Contains("cypress") || lower.Contains("qa") || lower.Contains("selenium") || lower.Contains("xunit"))
-        {
-            return "Testing";
-        }
-
-        if (lower.Contains("machine learning") || lower.Contains("ai") || lower.Contains("data") || lower.Contains("tensorflow") || lower.Contains("pytorch"))
-        {
-            return "AI & Data";
-        }
-
-        if (lower.Contains("design") || lower.Contains("figma") || lower.Contains("ux") || lower.Contains("ui"))
-        {
-            return "UI/UX";
-        }
-
-        if (lower.Contains("leader") || lower.Contains("manage") || lower.Contains("project") || lower.Contains("agile") || lower.Contains("scrum"))
-        {
-            return "Management & Leadership";
-        }
-
-        return "General";
+        return SkillCategoryResolver.ResolveCategory(skillName);
     }
 }

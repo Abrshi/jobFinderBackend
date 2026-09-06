@@ -1,14 +1,18 @@
 using System.Security.Claims;
 using Asp.Versioning;
+using FluentValidation;
 using jobFinderBackend.Application.Profile.Commands.UpdateProfileSkills;
+using jobFinderBackend.Application.Profile.Commands.UpdateMyProfile;
 using jobFinderBackend.Application.Profile.Commands.UpdateUserPlatforms;
 using jobFinderBackend.Application.Profile.DTOs;
+using jobFinderBackend.Application.Profile.Queries.GetMyProfile;
 using jobFinderBackend.Application.Profile.Queries.GetJobPlatform;
 using jobFinderBackend.Application.Profile.Queries.GetMySkills;
 using jobFinderBackend.Application.Profile.Queries.GetSkills;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace jobFinderBackend.Api.Controllers;
 
@@ -22,6 +26,61 @@ public class ProfileController : ControllerBase
     public ProfileController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<ProfileResponse>> GetProfile(
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await _mediator.Send(
+                new GetMyProfileQuery(), cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized(new { message = "User is not authenticated." });
+        }
+    }
+
+    [Authorize]
+    [HttpPut]
+    public async Task<ActionResult<ProfileResponse>> UpdateProfile(
+        UpdateProfileRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await _mediator.Send(
+                new UpdateMyProfileCommand(request), cancellationToken));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized(new { message = "User is not authenticated." });
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(new
+            {
+                message = "Profile data is invalid.",
+                errors = ex.Errors.Select(error => new
+                {
+                    field = error.PropertyName,
+                    message = error.ErrorMessage
+                })
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (DbUpdateException)
+        {
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                new { message = "The profile could not be saved." });
+        }
     }
 
     [Authorize]

@@ -30,18 +30,11 @@ public sealed class GeminiClient
                 "Gemini:ApiKey is not configured.");
         }
 
-        /*
-         * Gemini model.
-         *
-         * Your previous model:
-         * gemini-2.5-flash
-         *
-         * was returning HTTP 404 for your account.
-         *
-         * The API error specifically instructed you
-         * to use gemini-3.6-flash.
-         */
-        var model = "gemini-3.6-flash";
+        var model = _configuration["Gemini:Model"];
+        if (string.IsNullOrWhiteSpace(model))
+        {
+            model = "gemini-3.6-flash";
+        }
 
         Console.WriteLine();
         Console.WriteLine("------------------------------------------------------------");

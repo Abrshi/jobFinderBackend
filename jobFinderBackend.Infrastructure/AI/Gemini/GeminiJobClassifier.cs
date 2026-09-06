@@ -1,4 +1,3 @@
-
 using System.Text.Json;
 using jobFinder.Application.Jobs.Classification;
 using jobFinder.Application.Jobs.DTOs;
@@ -8,6 +7,37 @@ namespace jobFinderBackend.Infrastructure.AI.Gemini;
 public sealed class GeminiJobClassifier : IJobClassifier
 {
     private readonly GeminiClient _geminiClient;
+
+    private static readonly HashSet<string> ValidCategories =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Software & Technology",
+            "Data & Analytics",
+            "Cybersecurity",
+            "Design & Creative",
+            "Marketing & Communications",
+            "Sales & Business Development",
+            "Customer Service",
+            "Finance & Accounting",
+            "Human Resources",
+            "Administration",
+            "Project & Operations",
+            "Education",
+            "Healthcare",
+            "Legal",
+            "Engineering",
+            "Architecture",
+            "Construction & Trades",
+            "Science & Research",
+            "Logistics & Transportation",
+            "Manufacturing",
+            "Hospitality & Tourism",
+            "Agriculture",
+            "Media & Entertainment",
+            "Government & Public Sector",
+            "Nonprofit & Social Services",
+            "Other"
+        };
 
     public GeminiJobClassifier(GeminiClient geminiClient)
     {
@@ -21,10 +51,26 @@ public sealed class GeminiJobClassifier : IJobClassifier
         var prompt = $$"""
         Analyze this job posting and classify it accurately.
 
+        Your task is to understand the actual nature of the job rather than simply matching keywords.
+
+        Consider:
+        - Job title
+        - Job description
+        - Responsibilities
+        - Required skills
+        - Qualifications
+        - Employment information
+        - Company information
+        - Location
+
         Return ONLY valid JSON.
         Do not include markdown.
         Do not include explanations.
         Do not include comments.
+
+        ============================================================
+        JOB INFORMATION
+        ============================================================
 
         JOB TITLE:
         {{(string.IsNullOrWhiteSpace(job.Title)
@@ -60,262 +106,180 @@ public sealed class GeminiJobClassifier : IJobClassifier
         CATEGORY CLASSIFICATION
         ============================================================
 
+        Determine the single most appropriate professional category
+        for this job based on the actual nature and purpose of the work.
+
+        Do not classify the job only from keywords or individual
+        technologies.
+
+        Understand the job title, responsibilities, required skills,
+        qualifications, and overall purpose of the position before
+        selecting a category.
+
         Choose EXACTLY ONE category from this list:
 
-        Web Development
-        Backend Development
-        Frontend Development
-        Full Stack Development
-        Mobile Development
-        Software Engineering
-        DevOps
-        Cloud Engineering
+        Software & Technology
+        Data & Analytics
         Cybersecurity
-        Networking
-        Database Administration
-        Data Analysis
-        Data Science
-        Machine Learning
-        Artificial Intelligence
-        QA & Testing
-
-        UI/UX Design
-        Graphic Design
-        Video Editing
-        Photography
-        Content Creation
-        Animation
-
-        Digital Marketing
-        Social Media Marketing
-        SEO
-        Content Marketing
-        Sales
-        Customer Support
-        Business Development
-
-        Accounting
-        Finance
+        Design & Creative
+        Marketing & Communications
+        Sales & Business Development
+        Customer Service
+        Finance & Accounting
         Human Resources
         Administration
-        Project Management
-        Operations
-
-        Teaching
+        Project & Operations
+        Education
         Healthcare
         Legal
         Engineering
         Architecture
-        Logistics & Transport
-        Manufacturing & Trades
-
+        Construction & Trades
+        Science & Research
+        Logistics & Transportation
+        Manufacturing
+        Hospitality & Tourism
+        Agriculture
+        Media & Entertainment
+        Government & Public Sector
+        Nonprofit & Social Services
         Other
 
         ============================================================
-        CATEGORY RULES
+        CATEGORY DECISION RULES
         ============================================================
 
-        IMPORTANT:
-        Choose the MOST SPECIFIC category that matches the actual job.
+        Use your own reasoning to determine the category.
 
-        Do NOT blindly classify all technology jobs as "Software Engineering".
+        The category must represent the PRIMARY professional domain
+        of the job.
 
-        Examples:
+        Do not classify a job based only on one technology, tool,
+        software package, or skill mentioned in the posting.
 
-        React Developer
-        Next.js Developer
-        Angular Developer
-        Vue Developer
-        Frontend Developer
-        Front End Engineer
-        Web Developer
-        Website Developer
-        PHP Web Developer
-        WordPress Developer
+        Determine what the person is actually being hired to do.
 
-        => Web Development or Frontend Development depending on the job.
+        Examples of reasoning:
 
-        Backend Developer
-        Node.js Developer
-        .NET Developer
-        C# Backend Developer
-        Java Backend Developer
-        Python Backend Developer
-        API Developer
+        A software developer using React:
+        => Software & Technology
 
-        => Backend Development
+        A backend developer using .NET:
+        => Software & Technology
 
-        Full Stack Developer
-        Full Stack Engineer
-        MERN Stack Developer
-        MEAN Stack Developer
-        Full Stack Web Developer
+        A mobile developer using Flutter:
+        => Software & Technology
 
-        => Full Stack Development
+        A data analyst using Excel:
+        => Data & Analytics
 
-        React Native Developer
-        Flutter Developer
-        Android Developer
-        iOS Developer
-        Mobile App Developer
+        A machine learning engineer using Python:
+        => Data & Analytics
 
-        => Mobile Development
-
-        DevOps Engineer
-        DevOps Specialist
-        CI/CD Engineer
-        Infrastructure Engineer
-
-        => DevOps
-
-        AWS Engineer
-        Azure Cloud Engineer
-        Google Cloud Engineer
-        Cloud Architect
-        Cloud Engineer
-
-        => Cloud Engineering
-
-        Cybersecurity Analyst
-        Security Engineer
-        SOC Analyst
-        Information Security Specialist
-
+        A cybersecurity analyst using Python:
         => Cybersecurity
 
-        Network Administrator
-        Network Engineer
-        Network Technician
+        A nurse using medical software:
+        => Healthcare
 
-        => Networking
+        An accountant using Excel:
+        => Finance & Accounting
 
-        Data Analyst
-        Business Intelligence Analyst
-        Reporting Analyst
+        A teacher using online teaching software:
+        => Education
 
-        => Data Analysis
+        A graphic designer using Photoshop:
+        => Design & Creative
 
-        Data Scientist
-        Data Science Specialist
+        A video editor using Premiere Pro:
+        => Design & Creative or Media & Entertainment,
+        depending on the primary nature of the job.
 
-        => Data Science
+        A marketing specialist using Google Analytics:
+        => Marketing & Communications
 
-        Machine Learning Engineer
-        ML Engineer
-        Deep Learning Engineer
+        A civil engineer using AutoCAD:
+        => Engineering
 
-        => Machine Learning
+        An architect using Revit:
+        => Architecture
 
-        AI Engineer
-        Artificial Intelligence Engineer
-        Generative AI Engineer
-        NLP Engineer
+        A warehouse worker using inventory software:
+        => Logistics & Transportation
 
-        => Artificial Intelligence
+        An electrician:
+        => Construction & Trades
 
-        QA Engineer
-        Quality Assurance Engineer
-        Software Tester
-        Test Automation Engineer
+        A factory production worker:
+        => Manufacturing
 
-        => QA & Testing
+        ============================================================
+        IMPORTANT CATEGORY RULE
+        ============================================================
 
-        UI Designer
-        UX Designer
-        UX/UI Designer
-        Product Designer
+        When multiple professional areas appear in a job,
+        determine which area represents the PRIMARY responsibility.
 
-        => UI/UX Design
+        For example, a company may be hiring a developer for a
+        healthcare company.
 
-        Graphic Designer
-        Brand Designer
-        Visual Designer
-        Logo Designer
+        The job should be:
 
-        => Graphic Design
+        Software & Technology
 
-        Video Editor
-        Video Editing Specialist
-        Film Editor
-        Short-form Video Editor
+        NOT:
 
-        => Video Editing
+        Healthcare
 
-        Photographer
-        Photography Specialist
+        because the person's profession is software development.
 
-        => Photography
+        Similarly, if a healthcare organization hires a nurse who
+        uses software, the job should be:
 
-        Social Media Manager
-        Social Media Specialist
-        Social Media Coordinator
+        Healthcare
 
-        => Social Media Marketing
+        NOT:
 
-        SEO Specialist
-        SEO Manager
+        Software & Technology
 
-        => SEO
+        Classify the JOB, not the industry of the company.
 
-        Digital Marketing Specialist
-        Digital Marketing Manager
-        Performance Marketing Specialist
+        Do not create new categories.
 
-        => Digital Marketing
+        Do not return multiple categories.
 
-        Accountant
-        Accounting Officer
-        Senior Accountant
-        Junior Accountant
+        Do not return subcategories.
 
-        => Accounting
+        Do not return technology names as categories.
 
-        Financial Analyst
-        Finance Officer
-        Financial Manager
+        Do not return job titles as categories.
 
-        => Finance
-
-        HR Officer
-        Human Resources Specialist
-        Recruiter
-        Talent Acquisition Specialist
-
-        => Human Resources
-
-        Teacher
-        Lecturer
-        Instructor
-        Tutor
-        Teaching Assistant
-
-        => Teaching
-
-        Customer Service Representative
-        Customer Support Agent
-        Call Center Agent
-        Customer Care Specialist
-
-        => Customer Support
+        Use "Other" only when the job genuinely does not fit any
+        available category.
 
         ============================================================
         TITLE RULES
         ============================================================
 
-        If the source title is good:
-        - Clean it up.
-        - Preserve the actual job meaning.
+        If the source title is meaningful:
+
+        - Preserve its actual meaning.
+        - Clean obvious formatting problems.
         - Do not unnecessarily change it.
+        - Use a professional and concise title.
 
         If the source title is:
+
         - missing
         - "N/A"
         - "Job"
         - "Job Posting"
         - meaningless
         - badly translated
+        - obviously corrupted
 
-        Then infer a professional English title from the description.
+        infer a professional English title from the job description
+        and responsibilities.
 
         Examples:
 
@@ -330,18 +294,36 @@ public sealed class GeminiJobClassifier : IJobClassifier
         ============================================================
 
         companyName:
-        Infer from the description if the source company name is missing.
+
+        Use the provided company name when available.
+
+        If it is missing, infer the company name from the job
+        description when there is enough evidence.
+
+        Otherwise return null.
 
         country:
-        Infer from the job text when possible.
 
-        Example:
-        Addis Ababa => Ethiopia
+        Use the provided country when available.
+
+        If missing, infer the country from the job text or location
+        information when reasonably possible.
+
+        Otherwise return null.
 
         city:
-        Infer from the job text when possible.
+
+        Use the provided city when available.
+
+        If missing, infer the city from the job text when reasonably
+        possible.
+
+        Otherwise return null.
 
         employmentType:
+
+        Determine the employment type from the available information.
+
         Must be exactly one of:
 
         Full-time
@@ -353,6 +335,9 @@ public sealed class GeminiJobClassifier : IJobClassifier
         null
 
         experienceLevel:
+
+        Determine the required experience level when possible.
+
         Must be exactly one of:
 
         Entry Level
@@ -363,6 +348,9 @@ public sealed class GeminiJobClassifier : IJobClassifier
         null
 
         remoteType:
+
+        Determine the work arrangement when possible.
+
         Must be exactly one of:
 
         On-site
@@ -371,10 +359,14 @@ public sealed class GeminiJobClassifier : IJobClassifier
         null
 
         educationLevel:
-        Infer when explicitly stated.
+
+        Infer the education requirement only when it is explicitly
+        stated or strongly supported by the job posting.
+
         Otherwise return null.
 
         gender:
+
         Must be exactly one of:
 
         ANY
@@ -384,18 +376,56 @@ public sealed class GeminiJobClassifier : IJobClassifier
         Use ANY unless the job explicitly requires a specific gender.
 
         minimumExperienceYears:
+
         Return the minimum explicitly required number of years.
-        If not explicitly stated, return null.
+
+        If the posting does not explicitly state a required number
+        of years, return null.
 
         companyIndustry:
-        Infer the company's industry when possible.
+
+        Infer the company's primary industry when possible.
+
+        This field describes the COMPANY'S INDUSTRY, not the job
+        category.
+
         Otherwise return null.
 
         skills:
-        Return concise, standard industry technical and professional skills (e.g. "C#", "React", "Project Management", "SQL", "Graphic Design").
+
+        Extract concise, standard professional and technical skills
+        from the job posting.
+
+        Examples:
+
+        C#
+        React
+        Python
+        SQL
+        Project Management
+        Graphic Design
+        Accounting
+        Customer Service
+        AutoCAD
+
         Maximum 12 skills.
-        DO NOT include long sentences, job responsibilities, UI labels, or generic non-skill text (e.g. avoid phrases like "Teaching Exceptional Children", "Select", or full sentence descriptions).
-        Do not duplicate skills.
+
+        Skills must be:
+
+        - concise
+        - meaningful
+        - standardized
+        - relevant to the job
+
+        Do NOT include:
+
+        - full sentences
+        - job responsibilities
+        - long descriptions
+        - UI labels
+        - instructions
+        - duplicated skills
+        - meaningless words
 
         ============================================================
         OUTPUT
@@ -405,7 +435,7 @@ public sealed class GeminiJobClassifier : IJobClassifier
 
         {
           "title": "string",
-          "category": "string",
+          "category": "one category from the provided category list",
           "companyName": "string or null",
           "country": "string or null",
           "city": "string or null",
@@ -480,7 +510,7 @@ public sealed class GeminiJobClassifier : IJobClassifier
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Select(s => s.Trim())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Take(15)
+                .Take(12)
                 .ToList()
         };
     }
@@ -497,9 +527,25 @@ public sealed class GeminiJobClassifier : IJobClassifier
                     : "Untitled Position";
         }
 
+        /*
+         * Validate the category returned by Gemini.
+         *
+         * Gemini must return one of our known categories.
+         * If it returns something else, use Other.
+         */
         if (string.IsNullOrWhiteSpace(result.Category))
         {
             result.Category = "Other";
+        }
+        else
+        {
+            var normalizedCategory = ValidCategories
+                .FirstOrDefault(category =>
+                    category.Equals(
+                        result.Category.Trim(),
+                        StringComparison.OrdinalIgnoreCase));
+
+            result.Category = normalizedCategory ?? "Other";
         }
 
         result.CompanyName =
@@ -524,6 +570,10 @@ public sealed class GeminiJobClassifier : IJobClassifier
         {
             result.Gender = "ANY";
         }
+        else
+        {
+            result.Gender = NormalizeGender(result.Gender);
+        }
 
         var geminiSkills = result.Skills ?? [];
         var sourceSkills = job.Skills ?? [];
@@ -534,18 +584,61 @@ public sealed class GeminiJobClassifier : IJobClassifier
             .Where(IsValidSkillString)
             .Select(s => s!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .Take(15)
+            .Take(12)
             .ToList();
+    }
+
+    private static string NormalizeGender(string gender)
+    {
+        return gender.Trim().ToUpperInvariant() switch
+        {
+            "MALE" => "MALE",
+            "FEMALE" => "FEMALE",
+            _ => "ANY"
+        };
     }
 
     private static bool IsValidSkillString(string? skill)
     {
-        if (string.IsNullOrWhiteSpace(skill)) return false;
+        if (string.IsNullOrWhiteSpace(skill))
+        {
+            return false;
+        }
+
         var trimmed = skill.Trim();
-        if (trimmed.Length < 2 || trimmed.Length > 50) return false;
-        if (trimmed.Equals("Select", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("—", StringComparison.OrdinalIgnoreCase)) return false;
-        if (trimmed.Contains("http://", StringComparison.OrdinalIgnoreCase) || trimmed.Contains("https://", StringComparison.OrdinalIgnoreCase)) return false;
-        if (trimmed.Contains("<") || trimmed.Contains(">")) return false;
+
+        if (trimmed.Length < 2 || trimmed.Length > 50)
+        {
+            return false;
+        }
+
+        if (trimmed.Equals(
+                "Select",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (trimmed.Equals("—", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (trimmed.Contains(
+                "http://",
+                StringComparison.OrdinalIgnoreCase) ||
+            trimmed.Contains(
+                "https://",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (trimmed.Contains("<") || trimmed.Contains(">"))
+        {
+            return false;
+        }
+
         return true;
     }
 

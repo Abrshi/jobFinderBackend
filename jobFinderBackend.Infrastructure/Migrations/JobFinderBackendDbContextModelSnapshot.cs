@@ -243,7 +243,7 @@ namespace jobFinderBackend.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("FileUrl")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -277,7 +277,7 @@ namespace jobFinderBackend.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("FileUrl")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
