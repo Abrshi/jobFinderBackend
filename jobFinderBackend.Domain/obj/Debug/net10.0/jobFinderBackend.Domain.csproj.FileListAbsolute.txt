@@ -10,3 +10,15 @@ C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Domain\obj\Debu
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Domain\obj\Debug\net10.0\refint\jobFinderBackend.Domain.dll
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.pdb
 C:\Users\user\Desktop\qiyas\lab\project\BACKEND\jobFinderBackend.Domain\obj\Debug\net10.0\ref\jobFinderBackend.Domain.dll
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\bin\Debug\net10.0\jobFinderBackend.Domain.deps.json
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\bin\Debug\net10.0\jobFinderBackend.Domain.dll
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\bin\Debug\net10.0\jobFinderBackend.Domain.pdb
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.AssemblyInfo.cs
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.sourcelink.json
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.dll
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\refint\jobFinderBackend.Domain.dll
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\jobFinderBackend.Domain.pdb
+C:\Users\user\Desktop\qiyas\lab\project\jobFinderBackend\jobFinderBackend.Domain\obj\Debug\net10.0\ref\jobFinderBackend.Domain.dll

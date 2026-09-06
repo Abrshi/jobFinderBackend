@@ -1,3 +1,4 @@
+using jobFinderBackend.Application.DTOs.Auth;
 using jobFinderBackend.Application.Interfaces;
 using MediatR;
 
@@ -36,6 +37,8 @@ public class GetCurrentUserQueryHandler
 
         var role = await _userRepository.GetRoleByUserIdAsync(user.Id);
 
+        var subscriptionPlan = await _userRepository.GetActiveSubscriptionPlanAsync(user.Id);
+
         return new GetCurrentUserResponse
         {
             Id = user.Id,
@@ -43,7 +46,22 @@ public class GetCurrentUserQueryHandler
             LastName = user.LastName,
             Email = user.Email,
             Role = role?.Name ?? _currentUser.Role ?? string.Empty,
-            SubscriptionPlanId = user.SubscriptionPlanId
+            SubscriptionPlanId = user.SubscriptionPlanId,
+            Subscription = subscriptionPlan != null ? MapToDto(subscriptionPlan) : null
+        };
+    }
+
+    private static SubscriptionPlanDto MapToDto(jobFinder.Domain.Entities.SubscriptionPlans plan)
+    {
+        return new SubscriptionPlanDto
+        {
+            Id = plan.Id,
+            Name = plan.Name,
+            Price = plan.Price,
+            MaxJobSources = plan.MaxJobSources,
+            CanGenerateCV = plan.CanGenerateCV,
+            CanGenerateCoverLetter = plan.CanGenerateCoverLetter,
+            CanUseInterviewAI = plan.CanUseInterviewAI
         };
     }
 }

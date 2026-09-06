@@ -1,5 +1,6 @@
 using jobFinder.Domain.Entities;
 using jobFinderBackend.Infrastructure.Data;
+using jobFinderBackend.Infrastructure.Jobd;
 using Microsoft.EntityFrameworkCore;
 
 namespace jobFinderBackend.Infrastructure.Persistence.Configuration.Data;
@@ -81,93 +82,275 @@ public static class DataSeeder
 
 
         // ==============================
-        // Seed Skills
+        // Seed & Re-categorize Skills
         // ==============================
 
-        if (!await context.Skills.AnyAsync())
+        var junkSkills = await context.Skills
+            .Where(s => s.Name == "Select" || s.Name == "—" || s.Name.Length < 2 || s.Name.Length > 50 || s.Name.Contains("<") || s.Name.Contains(">") || s.Name.Contains("http://") || s.Name.Contains("https://"))
+            .ToListAsync();
+
+        if (junkSkills.Count > 0)
         {
-            var skills = new List<Skill>
-            {
-                // Programming Languages
-                new Skill { Name = "C#", Category = "Programming Languages" },
-                new Skill { Name = "Java", Category = "Programming Languages" },
-                new Skill { Name = "JavaScript", Category = "Programming Languages" },
-                new Skill { Name = "TypeScript", Category = "Programming Languages" },
-                new Skill { Name = "Python", Category = "Programming Languages" },
-                new Skill { Name = "PHP", Category = "Programming Languages" },
-                new Skill { Name = "C++", Category = "Programming Languages" },
-                new Skill { Name = "Go", Category = "Programming Languages" },
-                new Skill { Name = "Rust", Category = "Programming Languages" },
+            var junkSkillIds = junkSkills.Select(s => s.Id).ToList();
+            var userSkillLinks = await context.UserSkills.Where(us => junkSkillIds.Contains(us.SkillId)).ToListAsync();
+            if (userSkillLinks.Count > 0) context.UserSkills.RemoveRange(userSkillLinks);
 
-                // Frontend
-                new Skill { Name = "HTML", Category = "Frontend" },
-                new Skill { Name = "CSS", Category = "Frontend" },
-                new Skill { Name = "React", Category = "Frontend" },
-                new Skill { Name = "Angular", Category = "Frontend" },
-                new Skill { Name = "Vue.js", Category = "Frontend" },
-                new Skill { Name = "Next.js", Category = "Frontend" },
-                new Skill { Name = "Tailwind CSS", Category = "Frontend" },
+            var jobSkillLinks = await context.JobSkills.Where(js => junkSkillIds.Contains(js.SkillId)).ToListAsync();
+            if (jobSkillLinks.Count > 0) context.JobSkills.RemoveRange(jobSkillLinks);
 
-                // Backend
-                new Skill { Name = "ASP.NET Core", Category = "Backend" },
-                new Skill { Name = "Node.js", Category = "Backend" },
-                new Skill { Name = "Express.js", Category = "Backend" },
-                new Skill { Name = "Spring Boot", Category = "Backend" },
-                new Skill { Name = "Laravel", Category = "Backend" },
-                new Skill { Name = "Django", Category = "Backend" },
-                new Skill { Name = "REST API", Category = "Backend" },
-                new Skill { Name = "Entity Framework Core", Category = "Backend" },
-
-                // Database
-                new Skill { Name = "PostgreSQL", Category = "Database" },
-                new Skill { Name = "MySQL", Category = "Database" },
-                new Skill { Name = "SQL Server", Category = "Database" },
-                new Skill { Name = "MongoDB", Category = "Database" },
-                new Skill { Name = "Redis", Category = "Database" },
-
-                // DevOps & Cloud
-                new Skill { Name = "Git", Category = "DevOps & Cloud" },
-                new Skill { Name = "GitHub", Category = "DevOps & Cloud" },
-                new Skill { Name = "Docker", Category = "DevOps & Cloud" },
-                new Skill { Name = "Kubernetes", Category = "DevOps & Cloud" },
-                new Skill { Name = "AWS", Category = "DevOps & Cloud" },
-                new Skill { Name = "Azure", Category = "DevOps & Cloud" },
-                new Skill { Name = "Google Cloud", Category = "DevOps & Cloud" },
-                new Skill { Name = "CI/CD", Category = "DevOps & Cloud" },
-
-                // Mobile
-                new Skill { Name = "Flutter", Category = "Mobile" },
-                new Skill { Name = "React Native", Category = "Mobile" },
-                new Skill { Name = "Android", Category = "Mobile" },
-                new Skill { Name = "iOS", Category = "Mobile" },
-
-                // Testing
-                new Skill { Name = "Selenium", Category = "Testing" },
-                new Skill { Name = "Jest", Category = "Testing" },
-                new Skill { Name = "xUnit", Category = "Testing" },
-                new Skill { Name = "Cypress", Category = "Testing" },
-
-                // AI & Data
-                new Skill { Name = "Machine Learning", Category = "AI & Data" },
-                new Skill { Name = "Data Analysis", Category = "AI & Data" },
-                new Skill { Name = "TensorFlow", Category = "AI & Data" },
-                new Skill { Name = "PyTorch", Category = "AI & Data" },
-                new Skill { Name = "Pandas", Category = "AI & Data" },
-
-                // UI/UX
-                new Skill { Name = "Figma", Category = "UI/UX" },
-                new Skill { Name = "UI Design", Category = "UI/UX" },
-                new Skill { Name = "UX Design", Category = "UI/UX" },
-
-                // Security
-                new Skill { Name = "Cybersecurity", Category = "Security" },
-                new Skill { Name = "OAuth 2.0", Category = "Security" },
-                new Skill { Name = "JWT", Category = "Security" }
-            };
-
-            await context.Skills.AddRangeAsync(skills);
-
+            context.Skills.RemoveRange(junkSkills);
             await context.SaveChangesAsync();
         }
-    }
+
+        // Re-categorize any existing skills to ensure no skills remain under "General" or "Other"
+        var allSkills = await context.Skills.ToListAsync();
+        bool updatedAny = false;
+
+        foreach (var skill in allSkills)
+        {
+            var resolvedCategory = SkillCategoryResolver.ResolveCategory(skill.Name);
+            if (skill.Category != resolvedCategory)
+            {
+                skill.Category = resolvedCategory;
+                updatedAny = true;
+            }
+        }
+
+        if (updatedAny)
+        {
+            await context.SaveChangesAsync();
+        }
+    
+
+// ==============================
+// Seed Job Platforms
+// ==============================
+
+if (!await context.JobPlatforms.AnyAsync())
+{
+    var jobPlatforms = new List<JobPlatform>
+    {
+        // ==============================
+        // Major Job Platforms
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "LinkedIn",
+            Website = "https://www.linkedin.com/jobs",
+            Logo = "linkedin",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Indeed",
+            Website = "https://www.indeed.com",
+            Logo = "indeed",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Glassdoor",
+            Website = "https://www.glassdoor.com",
+            Logo = "glassdoor",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // Freelance Platforms
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "Upwork",
+            Website = "https://www.upwork.com",
+            Logo = "upwork",
+            SourceType = "API",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Fiverr",
+            Website = "https://www.fiverr.com",
+            Logo = "fiverr",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Freelancer",
+            Website = "https://www.freelancer.com",
+            Logo = "freelancer",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // Developer-Focused Platforms
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "GitHub Jobs",
+            Website = "https://github.com",
+            Logo = "github",
+            SourceType = "Manual",
+            IsActive = false
+        },
+
+        new JobPlatform
+        {
+            Name = "Wellfound",
+            Website = "https://wellfound.com",
+            Logo = "wellfound",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Stack Overflow Jobs",
+            Website = "https://stackoverflow.com/jobs",
+            Logo = "stackoverflow",
+            SourceType = "Manual",
+            IsActive = false
+        },
+
+        new JobPlatform
+        {
+            Name = "Dice",
+            Website = "https://www.dice.com",
+            Logo = "dice",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // Remote Job Platforms
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "Remote OK",
+            Website = "https://remoteok.com",
+            Logo = "remoteok",
+            SourceType = "API",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "We Work Remotely",
+            Website = "https://weworkremotely.com",
+            Logo = "weworkremotely",
+            SourceType = "RSS",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Remotive",
+            Website = "https://remotive.com",
+            Logo = "remotive",
+            SourceType = "API",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Remote.co",
+            Website = "https://remote.co",
+            Logo = "remote-co",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "FlexJobs",
+            Website = "https://www.flexjobs.com",
+            Logo = "flexjobs",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // Tech Job Boards
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "Hacker News Jobs",
+            Website = "https://news.ycombinator.com/jobs",
+            Logo = "hacker-news",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Arc",
+            Website = "https://arc.dev",
+            Logo = "arc",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "Landing.Jobs",
+            Website = "https://landing.jobs",
+            Logo = "landing-jobs",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // General Job Boards
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "Monster",
+            Website = "https://www.monster.com",
+            Logo = "monster",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        new JobPlatform
+        {
+            Name = "ZipRecruiter",
+            Website = "https://www.ziprecruiter.com",
+            Logo = "ziprecruiter",
+            SourceType = "Scraper",
+            IsActive = true
+        },
+
+        // ==============================
+        // Manual / Custom Source
+        // ==============================
+
+        new JobPlatform
+        {
+            Name = "JobFinder Manual",
+            Website = null,
+            Logo = "jobfinder",
+            SourceType = "Manual",
+            IsActive = true
+        }
+    };
+
+    await context.JobPlatforms.AddRangeAsync(jobPlatforms);
+
+    await context.SaveChangesAsync();
+}
+}
 }
