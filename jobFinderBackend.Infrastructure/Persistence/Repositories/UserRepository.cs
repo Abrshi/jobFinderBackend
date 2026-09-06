@@ -68,6 +68,30 @@ public class UserRepository : IUserRepository
 
         await _context.UserRoles.AddAsync(userRole);
 
+        // Create initial user subscription with Free plan (Id = 1)
+        var userSubscription = new UserSubscription
+        {
+            UserId = user.Id,
+            SubscriptionPlanId = 1,
+            StartDate = DateTime.UtcNow,
+            EndDate = null,
+            IsActive = true
+        };
+
+        await _context.UserSubscriptions.AddAsync(userSubscription);
+
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<SubscriptionPlans?> GetActiveSubscriptionPlanAsync(int userId)
+    {
+        var activeSubscription = await _context.UserSubscriptions
+            .Where(us => us.UserId == userId && us.IsActive)
+            .Where(us => us.EndDate == null || us.EndDate > DateTime.UtcNow)
+            .OrderByDescending(us => us.StartDate)
+            .Select(us => us.SubscriptionPlan)
+            .FirstOrDefaultAsync();
+
+        return activeSubscription;
     }
 }

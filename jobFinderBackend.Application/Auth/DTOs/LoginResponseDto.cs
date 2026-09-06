@@ -9,4 +9,6 @@ public class LoginResponse
     public string Message { get; set; } = null!;
 
     public string Role { get; set; } = null!;
+
+    public SubscriptionPlanDto? Subscription { get; set; }
 }

@@ -37,4 +37,10 @@ public class JobFinderBackendDbContext(DbContextOptions<JobFinderBackendDbContex
     public DbSet<Users> Users => Set<Users>();
     public DbSet<UserSkill> UserSkills => Set<UserSkill>();
     public DbSet<UserSubscription> UserSubscriptions => Set<UserSubscription>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(JobFinderBackendDbContext).Assembly);
+    }
 }

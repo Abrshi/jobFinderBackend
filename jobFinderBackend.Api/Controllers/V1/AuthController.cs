@@ -94,7 +94,8 @@ public class AuthController : ControllerBase
                 Id = result.Id,
                 Email = result.Email,
                 Role = result.Role,
-                Message = "Login successful."
+                Message = "Login successful.",
+                Subscription = result.Subscription
             };
 
             return Ok(response);

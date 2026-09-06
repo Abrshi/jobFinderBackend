@@ -4,7 +4,8 @@ public class Job
 {
     public int Id { get; set; }
 
-
+    public string ExternalId { get; set; } = null!;
+    
     public int JobPlatformId { get; set; }
 
 
